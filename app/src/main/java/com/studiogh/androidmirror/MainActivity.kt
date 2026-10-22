@@ -29,7 +29,7 @@ class MainActivity : Activity() {
     private var reader: ImageReader? = null
     private var server: MirrorServer? = null
     private val latestJpeg = AtomicReference<ByteArray?>(null)
-    private val accessToken: String = ByteArray(24).also { SecureRandom().nextBytes(it) }.joinToString(\"\") { \"%02x\".format(it) }
+    private val accessToken: String = ByteArray(24).also { SecureRandom().nextBytes(it) }.joinToString("") { "%02x".format(it) }
     private var screenW = 0
     private var screenH = 0
     private lateinit var status: TextView
