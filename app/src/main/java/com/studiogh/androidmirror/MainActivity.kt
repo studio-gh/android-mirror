@@ -19,6 +19,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import java.io.ByteArrayOutputStream
+import java.security.SecureRandom
 import java.util.concurrent.atomic.AtomicReference
 
 class MainActivity : Activity() {
@@ -28,6 +29,7 @@ class MainActivity : Activity() {
     private var reader: ImageReader? = null
     private var server: MirrorServer? = null
     private val latestJpeg = AtomicReference<ByteArray?>(null)
+    private val accessToken: String = ByteArray(24).also { SecureRandom().nextBytes(it) }.joinToString(\"\") { \"%02x\".format(it) }
     private var screenW = 0
     private var screenH = 0
     private lateinit var status: TextView
@@ -89,13 +91,13 @@ class MainActivity : Activity() {
         }, android.os.Handler(mainLooper))
         startCapture()
         try {
-            server = MirrorServer(8765, latestJpeg, screenW, screenH)
+            server = MirrorServer(8765, latestJpeg, screenW, screenH, accessToken)
             server?.start()
             val ip = wifiIp()
             status.text = "Espelhamento ativo. Mantenha este app aberto."
-            address.text = if (ip != "0.0.0.0") "No Mac, abra: http://$ip:8765" else
+            address.text = if (ip != "0.0.0.0") "No Mac, abra este link privado: http://$ip:8765/?token=$accessToken" else
                 "Wi-Fi sem endereço IPv4 detectável. Verifique a conexão e tente novamente."
-            if (ip != "0.0.0.0") Toast.makeText(this, "Abra http://$ip:8765 no navegador do Mac", Toast.LENGTH_LONG).show()
+            if (ip != "0.0.0.0") Toast.makeText(this, "Abra o link privado mostrado no Android Mirror", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             status.text = "Não foi possível iniciar o servidor: ${e.message}"
             stopMirror()
