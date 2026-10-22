@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Android Mirror</string>
+    <string name="accessibility_description">Permite enviar toques do navegador do seu Mac para o Android quando você iniciar o espelhamento.</string>
+</resources>
